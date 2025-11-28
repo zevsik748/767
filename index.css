@@ -1,3 +1,34 @@
-:root{color-scheme:dark}
-html,body{height:100%}
-body{margin:0;background:#020617;color:#e5e7eb}
+:root{ color-scheme: dark; }
+html { scroll-behavior: smooth; }
+html, body { height: 100%; }
+body { margin: 0; background: #020617; color: #e5e7eb; font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+a { color: inherit; text-decoration: none; }
+
+.radial{
+  position: fixed;
+  inset: -30%;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side at 20% 20%, rgba(124,58,237,.34), transparent 60%),
+    radial-gradient(closest-side at 70% 30%, rgba(6,182,212,.22), transparent 55%),
+    radial-gradient(closest-side at 50% 80%, rgba(236,72,153,.14), transparent 55%);
+  filter: blur(14px);
+  opacity: .95;
+}
+
+.bg-noise{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .10;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+  background-size: 280px 280px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .floaty { animation: floaty 10s ease-in-out infinite; }
+  @keyframes floaty { 0%,100%{ transform: translateY(0px);} 50%{ transform: translateY(-10px);} }
+  .shine { background-size: 200% 200%; animation: shine 10s ease-in-out infinite; }
+  @keyframes shine { 0%{background-position: 0% 50%} 50%{background-position: 100% 50%} 100%{background-position: 0% 50%} }
+}
