@@ -1,292 +1,339 @@
-import React, { useMemo } from "react";
-import { Brain, Video, Image as ImageIcon, Music, Mic, Layers, Wand2, ArrowRight, Check } from "lucide-react";
+import React from "react";
 
 const AUTHOR_TELEGRAM = "https://t.me/dmitriy_ferixdi";
-const PAYMENT_IMAGE_URL = "https://i.postimg.cc/SxQW2tH5/photo-2025-11-28-09-09-12.jpg";
 
-const AI_MODELS: string[] = [
+const MODELS = [
   "Google Nano Banana Pro",
   "ByteDance Seedance 1.0 Pro Fast",
-  "Grok Imagine",
+  "Grok Grok Imagine",
   "Hailuo 2.3",
   "Sora 2 Pro Storyboard",
   "Veo 3.1",
+  "Sora 2 Pro",
+  "Sora 2 Watermark Remove API",
+  "Veo 3",
+  "Seedance V1",
+  "Kling V2.1",
+  "Wan V2.2 A14B",
+  "Hailuo 02",
+  "Wan 2.2 Animate",
   "Kling 2.5 Turbo",
-  "Wan 2.2 A14B",
+  "Wan 2.5",
+  "Topaz Video Upscaler",
+  "Wan 2.2 A14B Speech to Video Turbo",
   "Runway Video Generation",
   "Ideogram V3",
   "Imagen 4",
   "Midjourney API",
+  "Seedream",
+  "NanoBanana‑Gemini 2.5 Flash Image Preview",
+  "Qwen Image",
+  "Qwen Image Edit",
+  "Ideogram Character",
   "4o Image",
   "Flux Kontext",
-  "Topaz Video Upscaler",
+  "Topaz Image Upscale",
+  "Seedream 4.0",
+  "Recraft Remove Background",
+  "Recraft Crisp Upscale",
+  "Ideogram V3 Reframe Image",
+  "Sora 2 (доп. режим)",
   "Suno API",
-  "ElevenLabs Text to Speech",
+  "ElevenLabs Audio Isolation",
+  "ElevenLabs Sound Effect",
   "ElevenLabs Speech to Text",
-  "Infinitalk Lip-Sync",
+  "ElevenLabs Text to Speech",
+  "Kling AI Avatar",
+  "Infinitalk API‑AI Lip‑Sync Generator",
 ];
 
-type Feature = { icon: React.ElementType; title: string; desc: string };
-const FEATURES: Feature[] = [
-  { icon: Brain, title: "Текст и логика", desc: "Сценарии, промпты, продающие тексты, ответы бота." },
-  { icon: Video, title: "Видео", desc: "Генерация и упаковка видео под маркетплейсы/рекламу." },
-  { icon: ImageIcon, title: "Изображения", desc: "Карточки, обложки, креативы, визуал под оффер." },
-  { icon: Music, title: "Музыка и SFX", desc: "Музыка, эффекты, обработка и чистка аудио." },
-  { icon: Mic, title: "Голос", desc: "TTS/STT, клонирование, реалистичная озвучка." },
-  { icon: Wand2, title: "Липсинк/аватары", desc: "Оживление лица под голос и говорящие аватары." },
-  { icon: Layers, title: "Воронка", desc: "Лендинг → Telegram → оплата → выдача доступа/результата." },
-];
-
-const CURRICULUM = [
-  { day: "Старт", title: "Запуск основы", desc: "Поднимаем сайт на Timeweb и связываем с Telegram." },
-  { day: "Настройка", title: "Упаковка продукта", desc: "Чтобы человек сразу понял: что это, зачем, куда нажимать." },
-  { day: "Системность", title: "Модели и режимы", desc: "Какие нейронки, какие параметры, что поддерживает text/img/video." },
-  { day: "Монетизация", title: "Тарифы и оплатa", desc: "Прайс, CTA, выдача. Структура, которая реально продаёт." },
-];
-
-function Chip({ children }: { children: React.ReactNode }) {
+function Stat({ top, bottom }: { top: string; bottom: string }) {
   return (
-    <span className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-sm text-white/90">
-      {children}
-    </span>
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <div className="text-3xl font-extrabold leading-none">{top}</div>
+      <div className="mt-2 text-sm text-white/70">{bottom}</div>
+    </div>
   );
 }
 
-function ButtonPrimary({ href, children }: { href: string; children: React.ReactNode }) {
+function SectionTitle({ kicker, title, desc }: { kicker?: string; title: string; desc?: string }) {
   return (
-    <a
-      href={href}
-      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-slate-950
-                 bg-gradient-to-r from-primary via-fuchsia-500 to-accent hover:opacity-95 transition"
-    >
-      {children}
-      <ArrowRight size={18} />
-    </a>
+    <div className="max-w-3xl">
+      {kicker ? (
+        <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80">
+          {kicker}
+        </div>
+      ) : null}
+      <h2 className="mt-4 text-3xl md:text-4xl font-extrabold tracking-tight">{title}</h2>
+      {desc ? <p className="mt-3 text-white/75 leading-relaxed">{desc}</p> : null}
+    </div>
   );
 }
 
-function ButtonGhost({ href, children }: { href: string; children: React.ReactNode }) {
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <a
-      href={href}
-      className="inline-flex items-center justify-center px-5 py-3 rounded-xl font-bold
-                 border border-white/15 bg-white/5 hover:bg-white/10 transition"
-    >
-      {children}
-    </a>
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div className="text-lg font-extrabold">{title}</div>
+      <div className="mt-3 text-white/80 leading-relaxed">{children}</div>
+    </div>
+  );
+}
+
+function Feature({ title, desc }: { title: string; desc: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div className="font-extrabold">{title}</div>
+      <div className="mt-2 text-white/75 leading-relaxed">{desc}</div>
+    </div>
+  );
+}
+
+function Step({
+  num,
+  title,
+  subtitle,
+  desc,
+}: {
+  num: string;
+  title: string;
+  subtitle: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div className="text-xs text-white/60">{num}</div>
+      <div className="mt-2 text-lg font-extrabold">{title}</div>
+      <div className="mt-1 text-white/80">{subtitle}</div>
+      <div className="mt-3 text-white/75 leading-relaxed">{desc}</div>
+    </div>
+  );
+}
+
+function Marquee({ items }: { items: string[] }) {
+  const doubled = [...items, ...items];
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-slate-950 to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-slate-950 to-transparent" />
+      <div className="flex gap-3 px-6 py-5 animate-[marquee_40s_linear_infinite] whitespace-nowrap">
+        {doubled.map((m, i) => (
+          <span
+            key={`${m}-${i}`}
+            className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white/85"
+          >
+            {m}
+          </span>
+        ))}
+      </div>
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
+    </div>
   );
 }
 
 export default function App() {
-  const topModels = useMemo(() => AI_MODELS.slice(0, 18), []);
-
   return (
-    <div className="min-h-screen bg-dark text-slate-50">
-      <div className="bg-noise" />
-
-      <nav className="fixed top-0 left-0 right-0 z-50 glass">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <a href="#" className="font-extrabold tracking-tight">
-            <span className="bg-gradient-to-r from-white via-violet-200 to-cyan-200 bg-clip-text text-transparent">
-              Ferixdi AI
-            </span>
-          </a>
-          <div className="hidden md:flex items-center gap-6 text-sm text-white/80">
-            <a className="hover:text-white" href="#features">Возможности</a>
-            <a className="hover:text-white" href="#models">Модели</a>
-            <a className="hover:text-white" href="#pricing">Тарифы</a>
+    <div className="min-h-screen bg-slate-950 text-white">
+      <div className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/70 backdrop-blur">
+        <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
+          <div className="font-extrabold tracking-tight">START</div>
+          <div className="hidden md:flex items-center gap-6 text-sm text-white/75">
+            <a href="#compare" className="hover:text-white">Сайт vs Telegram Бот</a>
+            <a href="#power" className="hover:text-white">Мощность</a>
+            <a href="#plan" className="hover:text-white">План</a>
+            <a href="#pricing" className="hover:text-white">Инвестиция</a>
           </div>
           <a
             href={AUTHOR_TELEGRAM}
-            className="px-4 py-2 rounded-lg bg-white/8 border border-white/12 hover:bg-white/12 transition text-sm font-semibold"
+            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold hover:bg-white/10"
           >
-            Написать
+            Написать Дмитрию
           </a>
         </div>
-      </nav>
+      </div>
 
-      <header className="pt-28 pb-10 px-4">
-        <div className="container mx-auto">
-          <div className="flex flex-wrap gap-2">
-            <Chip>42 нейросети</Chip>
-            <Chip>Telegram-бот</Chip>
-            <Chip>Запуск на Timeweb</Chip>
-            <Chip>Без заморочек</Chip>
-          </div>
+      <header className="mx-auto max-w-6xl px-4 pt-14 pb-10">
+        <div className="text-sm text-white/70">СИСТЕМА ОНЛАЙН • СТАРТ В ПОНЕДЕЛЬНИК</div>
 
-          <h1 className="mt-5 text-4xl md:text-6xl font-extrabold leading-[1.02] tracking-tight">
-            Нормальный сайт, который объясняет оффер и ведет в Telegram
-          </h1>
+        <h1 className="mt-5 text-5xl md:text-7xl font-extrabold tracking-tight leading-[0.95]">
+          ЗАПУСК AI
+          <br />
+          ИМПЕРИИ
+        </h1>
 
-          <p className="mt-4 text-lg text-white/80 max-w-3xl leading-relaxed">
-            У тебя будет витрина: что ты делаешь, какие режимы генерации поддерживаешь, какие нейросети внутри,
-            и куда человеку нажать, чтобы получить результат.
-          </p>
+        <p className="mt-6 max-w-2xl text-lg text-white/75 leading-relaxed">
+          За 7 дней ты развернешь собственную нейро-платформу с 42 моделями.
+          <br />
+          Без кода. На твоем сервере. Полная свобода.
+        </p>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <ButtonPrimary href={AUTHOR_TELEGRAM}>Запустить со мной</ButtonPrimary>
-            <ButtonGhost href="#pricing">Посмотреть тарифы</ButtonGhost>
-          </div>
+        <div className="mt-7 flex flex-wrap gap-3">
+          <a href="#pricing" className="rounded-xl bg-white text-slate-950 px-5 py-3 font-extrabold hover:opacity-95">
+            Доступ к курсу
+          </a>
+          <a href="#pricing" className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-extrabold hover:bg-white/10">
+            Занять место
+          </a>
+          <a href={AUTHOR_TELEGRAM} className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-extrabold hover:bg-white/10">
+            Написать Дмитрию
+          </a>
+        </div>
 
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { t: "Понятный UX", d: "Кнопки и секции сделаны так, чтобы человек не тупил." },
-              { t: "Быстрый деплой", d: "Vite билд в dist и раздача статикой на Timeweb." },
-              { t: "Готово к продажам", d: "CTA, тарифы, оплата, лид сразу в Telegram." },
-            ].map((x) => (
-              <div
-                key={x.t}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5"
-              >
-                <div className="font-extrabold">{x.t}</div>
-                <div className="mt-2 text-white/80 leading-relaxed">{x.d}</div>
-              </div>
-            ))}
-          </div>
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Stat top="42" bottom="Нейросетей" />
+          <Stat top="7 дней" bottom="Запуск за" />
+          <Stat top="05" bottom="Свободных мест" />
+          <Stat top="0%" bottom="Навыки кода" />
         </div>
       </header>
 
-      <main className="px-4 pb-16">
-        <section id="features" className="container mx-auto py-10">
-          <h2 className="text-3xl font-extrabold">Возможности</h2>
-          <p className="mt-3 text-white/80 max-w-3xl leading-relaxed">
-            Здесь ты показываешь, что бот умеет: текст, фото, видео, голос, липсинк. Всё в одном стиле.
-          </p>
+      <section id="compare" className="mx-auto max-w-6xl px-4 py-12">
+        <SectionTitle title="Сайт vs Telegram Бот" />
 
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {FEATURES.map((f) => {
-              const Icon = f.icon;
-              return (
-                <div key={f.title} className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl grid place-items-center bg-primary/20 border border-primary/25">
-                      <Icon size={20} />
-                    </div>
-                    <div className="font-extrabold">{f.title}</div>
-                  </div>
-                  <div className="mt-3 text-white/80 leading-relaxed">{f.desc}</div>
-                </div>
-              );
-            })}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card title="Сайты (Web 2.0)">
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Блокировки и VPN</li>
+              <li>Сложный тех. стек (VPS, SSL)</li>
+              <li>Дорогая разработка</li>
+              <li>Пользователю лень заходить</li>
+            </ul>
+          </Card>
+
+          <Card title="Telegram Бот">
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Стабильно работает без VPN</li>
+              <li>Привычный интерфейс чата</li>
+              <li>Мгновенный доступ к аудитории</li>
+              <li>Легкая интеграция с платежами</li>
+            </ul>
+          </Card>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6 text-white/80">
+          "Вся магия генерации происходит внутри, а сайт можно использовать просто как витрину."
+        </div>
+      </section>
+
+      <section id="power" className="mx-auto max-w-6xl px-4 py-12">
+        <SectionTitle
+          kicker="МОЩНОСТЬ ПОД КАПОТОМ"
+          title="42 Нейросети"
+          desc="В одной коробке. Мультимодальная архитектура. Твой бот сам понимает, что нужно пользователю: видео, голос или картинка."
+        />
+
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Feature title="Генерация видео" desc="Sora, Veo, Kling, Runway — топовые модели для создания видеоконтента." />
+          <Feature title="Создание изображений" desc="Midjourney, Ideogram, Flux — шедевры в один клик." />
+          <Feature title="Улучшение и обработка" desc="Upscale, удаление фона, рефрейминг изображений." />
+          <Feature title="Музыка и звук" desc="Suno для музыки, ElevenLabs для эффектов и обработки." />
+          <Feature title="Голос и синтез" desc="Text-to-Speech, клонирование голоса, Speech-to-Text." />
+          <Feature title="Лип-синк и аватары" desc="Оживление лиц под голос, создание говорящих аватаров." />
+        </div>
+
+        <div className="mt-10">
+          <Marquee items={MODELS} />
+        </div>
+      </section>
+
+      <section id="plan" className="mx-auto max-w-6xl px-4 py-12">
+        <SectionTitle
+          title="План захвата за 7 дней"
+          desc='Мы пройдем путь от "пустой сервер" до "первая продажа". Архитектура готова. Твоя задача — собрать конструктор по инструкции.'
+        />
+
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="font-extrabold">Бонус: Маркетинг</div>
+          <div className="mt-2 text-white/75 leading-relaxed">
+            Научу считать юнит-экономику, чтобы продавать генерации в 3 раза дороже себестоимости. Трафик: TG, Shorts, Взаимопиар.
           </div>
-        </section>
+        </div>
 
-        <section id="models" className="container mx-auto py-10">
-          <div className="flex items-end justify-between gap-4 flex-wrap">
-            <div>
-              <h2 className="text-3xl font-extrabold">Модели (витрина)</h2>
-              <p className="mt-3 text-white/80 max-w-3xl leading-relaxed">
-                Список можно расширять. Главное: пользователь видит, что внутри реально много всего.
-              </p>
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Step
+            num="1"
+            title="Старт"
+            subtitle="Установка основы"
+            desc="Разворачиваем бота на твоем сервере. Вставляем ключи в готовый шаблон."
+          />
+          <Step
+            num="2"
+            title="Настройка"
+            subtitle="Подключение нейросетей"
+            desc="Активируем нужные из 42 моделей. Выбираем режимы под твою нишу."
+          />
+          <Step
+            num="3"
+            title="Бизнес"
+            subtitle="Монетизация и трафик"
+            desc="Настраиваем тарифы. Разбираем, где брать клиентов и как продавать."
+          />
+          <Step
+            num="4"
+            title="Финал"
+            subtitle="Первые деньги"
+            desc="Готовый продукт, который можно показывать клиентам и принимать оплату."
+          />
+        </div>
+      </section>
+
+      <section id="pricing" className="mx-auto max-w-6xl px-4 py-12">
+        <SectionTitle title="ИНВЕСТИЦИЯ В БУДУЩЕЕ" />
+
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="text-3xl md:text-4xl font-extrabold line-through text-white/55">100 000 ₽</div>
+            <div className="text-4xl md:text-5xl font-extrabold">15 000 ₽</div>
+          </div>
+          <div className="mt-4 text-white/75 leading-relaxed">
+            Полный комплект: Сервер + Бот + Обучение + Маркетинг.
+            <br />
+            Цена ниже рынка, потому что я собираю портфолио успешных кейсов.
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div className="text-xs text-white/60">1</div>
+            <div className="mt-2 text-lg font-extrabold">СТАРТ</div>
+            <div className="mt-2 text-3xl font-extrabold">7 500 ₽</div>
+            <div className="mt-3 text-white/75 leading-relaxed">
+              Предоплата для бронирования места. Фиксируем участие, начинаем подготовку сервера.
             </div>
-            <a href={AUTHOR_TELEGRAM} className="text-sm font-semibold text-white/85 hover:text-white">
-              Хочу полный список →
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div className="text-xs text-white/60">2</div>
+            <div className="mt-2 text-lg font-extrabold">РЕЗУЛЬТАТ</div>
+            <div className="mt-2 text-3xl font-extrabold">7 500 ₽</div>
+            <div className="mt-3 text-white/75 leading-relaxed">
+              Оплата только после запуска. Ты видишь, что бот работает и приносит пользу.
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="font-extrabold">Реквизиты</div>
+          <div className="mt-2 text-white/75">Дмитрий</div>
+          <div className="mt-4 text-white/75">Гарантия возврата: Бот не заработал — деньги назад.</div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href={AUTHOR_TELEGRAM} className="rounded-xl bg-white text-slate-950 px-5 py-3 font-extrabold hover:opacity-95">
+              Написать Дмитрию
+            </a>
+            <a href="#compare" className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-extrabold hover:bg-white/10">
+              Вернуться вверх
             </a>
           </div>
-
-          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="flex flex-wrap gap-2">
-              {topModels.map((m) => (
-                <span key={m} className="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-white/85">
-                  {m}
-                </span>
-              ))}
-            </div>
-            <div className="mt-4 text-sm text-white/60">
-              Примечание: в боте можно сделать фильтры по типу (видео/фото/аудио), режимам и параметрам.
-            </div>
-          </div>
-        </section>
-
-        <section className="container mx-auto py-10">
-          <h2 className="text-3xl font-extrabold">План запуска</h2>
-          <p className="mt-3 text-white/80 max-w-3xl leading-relaxed">
-            Чтобы всё было “ультра-четко”: структура, кнопки, и чтобы ты понимал что дальше улучшать.
-          </p>
-
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-            {CURRICULUM.map((s) => (
-              <div key={s.title} className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                <div className="text-xs text-white/60">{s.day}</div>
-                <div className="mt-2 font-extrabold">{s.title}</div>
-                <div className="mt-2 text-white/80 leading-relaxed">{s.desc}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="pricing" className="container mx-auto py-10">
-          <h2 className="text-3xl font-extrabold">Тарифы</h2>
-          <p className="mt-3 text-white/80 max-w-3xl leading-relaxed">
-            Пример. Можешь поменять на свои пакеты и добавить “под ключ” сценарии.
-          </p>
-
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="font-extrabold text-lg">Старт</div>
-                <div className="font-extrabold">0 ₽</div>
-              </div>
-              <div className="mt-2 text-white/80">
-                Поднять сайт на Timeweb и чтобы он вел в Telegram.
-              </div>
-              <ul className="mt-4 space-y-2 text-white/85">
-                {["Готовый лендинг", "CTA кнопки", "Сборка Vite → dist"].map((x) => (
-                  <li key={x} className="flex items-center gap-2">
-                    <Check size={18} className="text-accent" />
-                    <span>{x}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6">
-                <ButtonGhost href={AUTHOR_TELEGRAM}>Хочу старт</ButtonGhost>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-accent/30 bg-accent/5 p-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="font-extrabold text-lg">Настройка / Курс</div>
-                <div className="font-extrabold">20 000 ₽</div>
-              </div>
-              <div className="mt-2 text-white/80">
-                Докручиваем в продукт: меню, режимы, монетизация, чтобы оно реально продавало.
-              </div>
-              <ul className="mt-4 space-y-2 text-white/85">
-                {["Упаковка оффера", "UX “куда нажимать”", "Витрина моделей/режимов", "Оплата + выдача"].map((x) => (
-                  <li key={x} className="flex items-center gap-2">
-                    <Check size={18} className="text-accent" />
-                    <span>{x}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6">
-                <ButtonPrimary href={AUTHOR_TELEGRAM}>Хочу докрутить</ButtonPrimary>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
-            <div className="font-extrabold">Картинка оплаты (пример)</div>
-            <img
-              className="mt-4 w-full max-w-2xl rounded-2xl border border-white/10"
-              src={PAYMENT_IMAGE_URL}
-              alt="Оплата"
-              loading="lazy"
-            />
-            <div className="mt-3 text-sm text-white/60">
-              Можно заменить на твои реквизиты/Want2PayBot (как тебе нужно в системе).
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="border-t border-white/10 py-8 px-4">
-        <div className="container mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="text-white/70 text-sm">© {new Date().getFullYear()} Ferixdi AI</div>
-          <a className="text-white/80 hover:text-white text-sm" href={AUTHOR_TELEGRAM}>
-            {AUTHOR_TELEGRAM}
-          </a>
         </div>
+      </section>
+
+      <footer className="border-t border-white/10 py-10">
+        <div className="mx-auto max-w-6xl px-4 text-sm text-white/60">START</div>
       </footer>
     </div>
   );
